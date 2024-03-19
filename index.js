@@ -1,10 +1,19 @@
 //! have settings of the server
 
 import express from 'express'
+import dotenv from 'dotenv'
+import conectarDB from './config/db.js'
 
 const app = express()
 
+// to use envioroment variables
+dotenv.config()
 
-app.listen(4000, () => {
-    console.log('Servidor corriendo en el purto 4000')
+conectarDB()
+
+const PORT = process.env.PORT || 4000
+
+
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en el purto ${PORT}`)
 })
