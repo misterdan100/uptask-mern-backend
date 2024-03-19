@@ -27,5 +27,6 @@ const usuarioSchema = mongoose.Schema({
     timestamps: true,
 })
 
+// create model Usuario with before schema
 const Usuario = mongoose.model('Usuario', usuarioSchema)
 export default Usuario
