@@ -20,7 +20,10 @@ const usuarioSchema = mongoose.Schema({
     },
     token: {
         type: String,
-        dafault: false,
+    },
+    confirmado: {
+        type: Boolean,
+        default: false,
     }
 }, {
     // crea dos propiedades mas: created and updated

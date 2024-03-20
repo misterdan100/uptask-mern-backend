@@ -6,6 +6,7 @@ import dotenv from 'dotenv'
 import conectarDB from './config/db.js'
 
 const app = express()
+app.use(express.json())
 
 // to use envioroment variables
 dotenv.config()
