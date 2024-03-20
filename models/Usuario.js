@@ -32,7 +32,7 @@ const usuarioSchema = mongoose.Schema({
 })
 
 usuarioSchema.pre('save', async function(next) {
-    if( !this.inModified('password')) {
+    if( !this.isModified('password')) {
         next()
     }
     // generar rondas de hasheo
