@@ -9,7 +9,7 @@ const checkAuth = async (req, res, next) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
             req.usuario = await Usuario.findById(decoded.id).select('-password -confirmado -token -createdAt -updatedAt -__v')
 
-            res.json({msg: req.usuario})
+            // res.json({msg: req.usuario})
             return next()
 
         } catch (error) {
@@ -19,7 +19,7 @@ const checkAuth = async (req, res, next) => {
 
     if(!token) {
         const error = new Error('Token no valido')
-        res.status(401).json({msg: error.message})
+        return res.status(401).json({msg: error.message})
     }
 
 
