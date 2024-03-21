@@ -134,7 +134,13 @@ const nuevoPassword = async (req, res) => {
     } catch (error) {
         console.error(error)
     }
+}
 
+const perfil = async (req, res) => {
+    const { usuario } = req
+    
+    // res.json({usuario})
+    console.log(usuario)
 }
 
 
@@ -145,5 +151,6 @@ export {
     confirmar,
     olvidePassword,
     comprobarToken,
-    nuevoPassword
+    nuevoPassword,
+    perfil
 }
