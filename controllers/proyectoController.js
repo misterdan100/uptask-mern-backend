@@ -85,7 +85,33 @@ const editarProyecto = async (req, res) => {
 }
 
 const eliminarProyecto = async (req, res) => {
+    // acces to url params
+    const { id } = req.params
 
+    try {
+        // validate if project exists
+        // if the id doesn't have the same characters extention, findById() return a error
+        const proyecto = await Proyecto.findById(id)
+
+        // if project doesn't exist
+        if (!proyecto) {
+            const error = new Error("Proyecto No Encontrado")
+            return res.status(404).json({ msg: error.message })
+        }
+        // validate if user is the same of creator
+        if (proyecto.creador.toString() !== req.usuario._id.toString()) {
+            const error = new Error('No tienes los permisos necesarios!')
+            return res.status(401).json({ msg: error.message })
+        }
+
+        await proyecto.deleteOne()
+        res.json({msg: `Proyecto ${proyecto.nombre} fue eliminado.`})
+
+    } catch (error) {
+        console.log(error.message)
+        const errorDb = new Error("Proyecto No Encontrado")
+        return res.status(404).json({ msg: errorDb.message })
+    }
 }
 
 const agregarColaborador = async (req, res) => {
