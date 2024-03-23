@@ -83,8 +83,31 @@ const actualizarTarea = async (req, res) => {
 }
 
 const eliminarTarea = async (req, res) => {
-    
+    const { id } = req.params
+    try {
+        const tarea = await Tarea.findById(id).populate("proyecto")
+        
+        // validate tarea existe
+        if(!tarea) {
+            const error = new Error("Tarea no encontrada")
+            return res.status(404).json({msg: error.message})
+        }
 
+        // validate creator
+        if(tarea.proyecto.creador.toString() !== req.usuario._id.toString()) {
+            const error = new Error("No tienes permisos para eliminar esta tarea")
+            return res.status(401).json({msg: error.message})
+        }
+
+        // delete task
+        await tarea.deleteOne()
+        return res.status(200).json({msg: 'Tarea Eliminada'})
+
+    } catch (error) {
+        const error2 = new Error('Hubo un error!')
+        res.status(404).json({msg: error2.message})
+        return console.log(error.message) 
+    }
 }
 
 const cambiarEstado = async (req, res) => {
