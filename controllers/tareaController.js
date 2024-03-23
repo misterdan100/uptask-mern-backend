@@ -50,11 +50,41 @@ const obtenerTarea = async (req, res) => {
 }
 
 const actualizarTarea = async (req, res) => {
-    res.json({msg: 'funcion actualizarTarea'})
+    const { id } = req.params
+
+    try {
+        const tarea = await Tarea.findById(id).populate("proyecto")
+
+        if(!tarea) {
+            const error = new Error('Tarea no encontrada')
+            return res.status(404).json({msg: error.message})
+        }
+
+        if(tarea.proyecto.creador.toString() !== req.usuario._id.toString()) {
+            const error = new Error('No estas autorizado para editar esta tarea.')
+            return res.status(401).json({msg: error.message})
+        }
+
+        const { nombre, descripcion, fechaEntrega, priorida } = req.body
+        tarea.nombre = nombre || tarea.nombre
+        tarea.descripcion = descripcion || tarea.descripcion
+        tarea.fechaEntrega = fechaEntrega || tarea.fechaEntrega
+        tarea.priorida = priorida || tarea.priorida
+
+        const tareaAlmacenada = await tarea.save()
+
+        return res.status(200).json(tareaAlmacenada)
+
+    } catch (error) {
+        const error2 = new Error('Hubo un error!')
+        res.status(404).json({msg: error2.message})
+        return console.log(error.message)
+    }
 }
 
 const eliminarTarea = async (req, res) => {
-    res.json({msg: 'funcion eliminarTarea'})
+    
+
 }
 
 const cambiarEstado = async (req, res) => {
