@@ -1,6 +1,7 @@
 //! have settings of the server
 
 import express from 'express'
+import cors from 'cors'
 import usuarioRoutes from './routes/usuarioRoutes.js'
 import proyectoRoutes from './routes/proyectoRoutes.js'
 import tareaRoutes from './routes/tareaRoutes.js'
@@ -14,6 +15,23 @@ app.use(express.json())
 dotenv.config()
 
 conectarDB()
+
+// Config cors
+const whiteList = [
+    'http://localhost:5173'
+]
+const corsOptions = {
+    origin: function(origin, callback) {
+        if(whiteList.includes(origin)) {
+            callback(null, true)
+        } else {
+            callback(new Error('Error de Cors'))
+        }
+    }
+}
+
+app.use(cors(corsOptions))
+
 
 // Routing
 app.use('/api/usuarios', usuarioRoutes)
