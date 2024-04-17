@@ -39,12 +39,7 @@ const obtenerProyecto = async (req, res) => {
             return res.status(401).json({ msg: error.message })
         }
 
-        // get project's taks
-        const tareas = await Tarea.find({ proyecto: proyecto._id})
-        return res.json({
-            proyecto,
-            tareas
-        })
+        return res.status(200).json(proyecto)
 
     } catch (error) {
         console.log(error.message)
