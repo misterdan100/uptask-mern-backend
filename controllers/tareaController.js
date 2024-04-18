@@ -18,6 +18,10 @@ const agregarTarea = async (req, res) => {
         }
 
         const tareaAlmacenada = await Tarea.create(req.body)
+        // Almacenar ID en el proyecto
+        existeProyecto.tareas.push(tareaAlmacenada._id)
+        await existeProyecto.save()
+
         res.status(201).json('Tarea creada con exito')
         
     } catch (error) {
