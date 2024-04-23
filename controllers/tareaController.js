@@ -22,7 +22,7 @@ const agregarTarea = async (req, res) => {
         existeProyecto.tareas.push(tareaAlmacenada._id)
         await existeProyecto.save()
 
-        res.status(201).json('Tarea creada con exito')
+        res.status(201).json(tareaAlmacenada)
         
     } catch (error) {
         res.json({msg: "Hubo un error!"})

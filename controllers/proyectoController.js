@@ -2,7 +2,10 @@ import Proyecto from '../models/Proyecto.js'
 import Tarea from '../models/Tarea.js'
 
 const obtenerProyectos = async (req, res) => {
-    const proyectos = await Proyecto.find().where('creador').equals(req.usuario._id)
+    const proyectos = await Proyecto.find()
+        .where('creador')
+        .equals(req.usuario._id)
+        .select('-tareas')
     res.json(proyectos)
 }
 
@@ -26,7 +29,7 @@ const obtenerProyecto = async (req, res) => {
     try {
         // validate if project exists
         // if the id doesn't have the same characters extention, findById() return a error
-        const proyecto = await Proyecto.findById(id)
+        const proyecto = await Proyecto.findById(id).populate('tareas')
 
         // if project doesn't exist
         if (!proyecto) {
