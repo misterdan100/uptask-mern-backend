@@ -133,6 +133,45 @@ const buscarColaborador = async (req, res) => {
 
 const agregarColaborador = async (req, res) => {
 
+    const { id } = req.params
+
+    const proyecto = await Proyecto.findById(id)
+    if(!proyecto) {
+        const error = new Error('Proyecto no encontrado')
+        return res.status(404).json({msg: error.message})
+    }
+
+    if(proyecto.creador.toString() !== req.usuario._id.toString()) {
+        const error = new Error('Accion no valida.')
+        return res.status(404).json({msg: error.message})
+    }
+
+    const { email } = req.body
+    const usuario = await Usuario.findOne({email}).select(
+        "-confirmado -createdAd -password -token -updatedAt -__v"
+    )
+
+    if(!usuario) {
+        const error = new Error('Usuario no encontrado')
+        return res.status(404).json({msg: error.message})
+    }
+
+    // Colaborator is not the project's admin
+    if(proyecto.creador.toString() === usuario._id.toString()) {
+        const error = new Error('El creador del proyecto no puede ser colaborador.')
+        return res.status(404).json({msg: error.message})
+    }
+
+    // check colaborator is no already as a colaborator
+    if(proyecto.colaboradores.includes(usuario._id)) {
+        const error = new Error('El usuario ya es colaborador en el proyecto.')
+        return res.status(404).json({msg: error.message})
+    }
+
+    proyecto.colaboradores.push(usuario._id)
+    await proyecto.save()
+    return res.status(202).json({msg: 'Colaborador agregado correctamente.'})
+
 }
 
 const eliminarColaborador = async (req, res) => {
