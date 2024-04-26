@@ -115,7 +115,33 @@ const eliminarTarea = async (req, res) => {
 }
 
 const cambiarEstado = async (req, res) => {
-    res.json({msg: 'funcion cambiarEstado'})
+    
+    const { id } = req.params
+    try {
+        const tarea = await Tarea.findById(id).populate("proyecto")
+        
+        // validate tarea existe
+        if(!tarea) {
+            const error = new Error("Tarea no encontrada")
+            return res.status(404).json({msg: error.message})
+        }
+
+        // validate creator
+        if (tarea.proyecto.creador.toString() !== req.usuario._id.toString() && !tarea.proyecto.colaboradores.some( colaborador => colaborador._id.toString() === req.usuario._id.toString())) {
+            const error = new Error('No tienes los permisos necesarios!')
+            return res.status(401).json({ msg: error.message })
+        }
+
+        tarea.estado = !tarea.estado
+
+        await tarea.save()
+        res.status(200).json(tarea)
+
+    } catch (error) {
+        const error2 = new Error('Hubo un error!')
+        res.status(404).json({msg: error2.message})
+        return console.log(error.message) 
+    }
 }
 
 export {
