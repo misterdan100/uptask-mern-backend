@@ -137,9 +137,17 @@ const cambiarEstado = async (req, res) => {
         }
 
         tarea.estado = !tarea.estado
-
+        tarea.completado = req.usuario._id
         await tarea.save()
-        res.status(200).json(tarea)
+
+        const tareaAlmacenada = await Tarea.findById(id)
+            .populate("proyecto")
+            .populate("completado")
+
+        console.log(tareaAlmacenada)
+
+
+        res.status(200).json(tareaAlmacenada)
 
     } catch (error) {
         const error2 = new Error('Hubo un error!')

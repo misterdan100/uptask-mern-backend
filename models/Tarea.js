@@ -13,7 +13,7 @@ const tareaSchema = mongoose.Schema({
     },
     estado: {
         type: Boolean,
-        default: true
+        default: false
     },
     fechaEntrega: {
         type: Date,
@@ -29,6 +29,11 @@ const tareaSchema = mongoose.Schema({
     proyecto: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Proyecto'
+    },
+    completado: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Usuario",
+        default: null
     }
 }, {
     timestamps: true
